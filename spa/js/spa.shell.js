@@ -12,6 +12,7 @@
 /*global $, spa */
 
 spa.shell = (function () {
+    'use strict';
 //---------------- BEGIN MODULE SCOPE VARIABLES --------------
     var
         configMap = {
@@ -21,9 +22,11 @@ spa.shell = (function () {
             resize_interval : 200,
             main_html : String()
                 + '<div class="spa-shell-head">'
-                + '<div class="spa-shell-head-logo"></div>'
+                + '<div class="spa-shell-head-logo">'
+                + '<h1>SPA</h1>'
+                + '<p>javascript end to end</p>'
+                + '</div>'
                 + '<div class="spa-shell-head-acct"></div>'
-                + '<div class="spa-shell-head-search"></div>'
                 + '</div>'
                 + '<div class="spa-shell-main">'
                 + '<div class="spa-shell-main-nav"></div>'
@@ -48,6 +51,7 @@ spa.shell = (function () {
 
         copyAnchorMap, setJqueryMap,
         changeAnchorPart, onHashchange, onResize,
+        onTapAcct, onLogin, onLogout,
         setChatAnchor, initModule;
 
     //----------------- END MODULE SCOPE VARIABLES ---------------
@@ -66,7 +70,9 @@ spa.shell = (function () {
     setJqueryMap = function () {
         var $container = stateMap.$container;
         jqueryMap = {
-            $container : $container
+            $container : $container,
+            $acct : $container.find('.spa-shell-head-acct'),
+            $nav : $container.find('.spa-shell-main-nav')
         };
     };
     // End DOM method /setJqueryMap/
@@ -98,25 +104,25 @@ spa.shell = (function () {
 
         // Begin merge changes into anchor map
         KEYVAL:
-        for ( key_name in arg_map ) {
-            if ( arg_map.hasOwnProperty( key_name ) ) {
-                // skip dependent keys during iteration
-                if ( key_name.indexOf( '_' ) === 0 ) { continue KEYVAL;  }
+            for ( key_name in arg_map ) {
+                if ( arg_map.hasOwnProperty( key_name ) ) {
+                    // skip dependent keys during iteration
+                    if ( key_name.indexOf( '_' ) === 0 ) { continue KEYVAL;  }
 
-                // update independent key value
-                anchor_map_revise[key_name] = arg_map[key_name];
+                    // update independent key value
+                    anchor_map_revise[key_name] = arg_map[key_name];
 
-                // update matching dependent key
-                key_name_dep = '_' + key_name;
-                if ( arg_map[key_name_dep] ) {
-                    anchor_map_revise[key_name_dep] = arg_map[key_name_dep];
-                }
-                else {
-                    delete anchor_map_revise[key_name_dep];
-                    delete anchor_map_revise['_s' + key_name_dep];
+                    // update matching dependent key
+                    key_name_dep = '_' + key_name;
+                    if ( arg_map[key_name_dep] ) {
+                        anchor_map_revise[key_name_dep] = arg_map[key_name_dep];
+                    }
+                    else {
+                        delete anchor_map_revise[key_name_dep];
+                        delete anchor_map_revise['_s' + key_name_dep];
+                    }
                 }
             }
-        }
         // End merge changes into anchor map
         // Begin attempt to update URI; revert if not successful
         try {
@@ -207,19 +213,31 @@ spa.shell = (function () {
                 $.uriAnchor.setAnchor( anchor_map_proposed, null, true );
             }
         }
-    // End revert anchor if slider change denied
+        // End revert anchor if slider change denied
         return false;
     };
+
     // End Event handler /onHashchange/
 
-    onClickChat = function (  ) {
-        changeAnchorPart({
-            chat: ( stateMap.is_chat_retracted ? 'open' : 'closed' )
-        });
+
+    onTapAcct = function ( event ) {
+        var acct_text, user_name, user = spa.model.people.get_user();
+        if ( user.get_is_anon() ) {
+            user_name = prompt( 'Please sign-in' );
+            spa.model.people.login( user_name );
+            jqueryMap.$acct.text( '... processing ...' );
+        }
+        else {
+            spa.model.people.logout();
+        }
         return false;
-
     };
-
+    onLogin = function ( event, login_user ) {
+        jqueryMap.$acct.text( login_user.name );
+    };
+    onLogout = function ( event, logout_user ) {
+        jqueryMap.$acct.text( 'Please sign-in' );
+    };
     //-------------------- END EVENT HANDLERS --------------------
     //---------------------- BEGIN CALLBACKS ---------------------
     // Begin callback method /setChatAnchor/
@@ -290,9 +308,15 @@ spa.shell = (function () {
             .bind( 'hashchange', onHashchange )
             .trigger( 'hashchange' );
 
+
+        $.gevent.subscribe( $container, 'spa-login', onLogin );
+        $.gevent.subscribe( $container, 'spa-logout', onLogout );
+        jqueryMap.$acct
+            .text( 'Please sign-in')
+            .bind( 'utap', onTapAcct );
     };
-// End PUBLIC method /initModule/
+    // End PUBLIC method /initModule/
     return { initModule : initModule };
-//------------------- END PUBLIC METHODS ---------------------
+    //------------------- END PUBLIC METHODS ---------------------
 }());
 
