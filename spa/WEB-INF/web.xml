@@ -7,9 +7,8 @@
          version="2.4">
 
     <display-name>SPA</display-name>
-    <servlet-mapping>
-        <servlet-name>default</servlet-name>
-        <url-pattern>/static/*</url-pattern>
-    </servlet-mapping>
+    <welcome-file-list>
+         <welcome-file>spa.html</welcome-file>
+     </welcome-file-list>
 
 </web-app>
