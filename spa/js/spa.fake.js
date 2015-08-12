@@ -19,22 +19,22 @@ spa.fake = (function () {
     };
 
     peopleList = [
-        { name : 'Betty', _id : 'id_01',
+        { name : 'Knut', _id : 'id_01',
             css_map : { top: 20, left: 20,
                 'background-color' : 'rgb( 128, 128, 128)'
             }
         },
-        { name : 'Mike', _id : 'id_02',
+        { name : 'Hilde', _id : 'id_02',
             css_map : { top: 60, left: 20,
                 'background-color' : 'rgb( 128, 255, 128)'
             }
         },
-        { name : 'Pebbles', _id : 'id_03',
+        { name : 'Øyvind', _id : 'id_03',
             css_map : { top: 100, left: 20,
                 'background-color' : 'rgb( 128, 192, 192)'
             }
         },
-        { name : 'Wilma', _id : 'id_04',
+        { name : 'Per Kristian', _id : 'id_04',
             css_map : { top: 140, left: 20,
                 'background-color' : 'rgb( 192, 128, 128)'
             }
@@ -51,7 +51,7 @@ spa.fake = (function () {
         };
 
         emit_sio = function ( msg_type, data ) {
-            var person_map;
+            var person_map, i;
             // respond to 'adduser' event with 'userupdate'
             // callback after a 3s delay
             //
@@ -64,7 +64,7 @@ spa.fake = (function () {
                     };
                     peopleList.push( person_map );
                     callback_map.userupdate([ person_map ]);
-                }, 3000 );
+                }, 1000 );
             }
 
             // Respond to 'updatechat' event with an 'updatechat'
@@ -76,7 +76,7 @@ spa.fake = (function () {
                         dest_id : user.id,
                         dest_name : user.name,
                         sender_id : data.dest_id,
-                        msg_text : 'Thanks for the note, ' + user.name
+                        msg_text : 'Du er så kul, ' + user.name
                     }]);
                 }, 2000);
             }
@@ -91,6 +91,19 @@ spa.fake = (function () {
                 }
                 send_listchange();
             }
+
+            // simulate send of 'updateavatar' message and data to server
+            if ( msg_type === 'updateavatar' && callback_map.listchange ) {
+                // simulate receipt of 'listchange' message
+                for ( i = 0; i < peopleList.length; i++ ) {
+                    if ( peopleList[ i ]._id === data.person_id ) {
+                        peopleList[ i ].css_map = data.css_map;
+                        break;
+                    }
+                }
+                // execute callback for the 'listchange' message
+                callback_map.listchange([ peopleList ]);
+            }
         };
         emit_mock_msg = function () {
             setTimeout( function () {
@@ -100,11 +113,11 @@ spa.fake = (function () {
                         dest_id : user.id,
                         dest_name : user.name,
                         sender_id : 'id_04',
-                        msg_text : 'Hi there ' + user.name + '! Wilma here.'
+                        msg_text : 'Yo, ' + user.name + '-girl! Per Kristian her.'
                     }]);
                 }
                 else { emit_mock_msg(); }
-            }, 8000 );
+            }, 7000 );
         };
         // Try once per second to use listchange callback.
         // Stop trying after first success.

@@ -23,8 +23,8 @@ spa.shell = (function () {
             main_html : String()
                 + '<div class="spa-shell-head">'
                 + '<div class="spa-shell-head-logo">'
-                + '<h1>SPA</h1>'
-                + '<p>javascript end to end</p>'
+                + '<h1>MartaChat</h1>'
+                + '<p>Everything is awesome</p>'
                 + '</div>'
                 + '<div class="spa-shell-head-acct"></div>'
                 + '</div>'
@@ -296,6 +296,11 @@ spa.shell = (function () {
         });
         spa.chat.initModule( jqueryMap.$container );
 
+        spa.avtr.configModule({
+            chat_model : spa.model.chat,
+            people_model : spa.model.people
+        });
+        spa.avtr.initModule( jqueryMap.$nav );
         // Handle URI anchor change events.
         // This is done /after/ all feature modules are configured
         // and initialized, otherwise they will not be ready to handle

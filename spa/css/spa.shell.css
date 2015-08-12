@@ -13,19 +13,19 @@
 
 .spa-shell-head-logo h1 {
     font : 800 22px/22px Arial, Helvetica, sans-serif;
-    margin : 0;
+    margin : 3px;
 }
 .spa-shell-head-logo p {
     font : 800 10px/10px Arial, Helvetica, sans-serif;
-    margin : 0;
+    margin : 3px;
 }
 
 .spa-shell-head-logo {
     top             : 4px;
     left            : 8px;
-    height            : 32px;
-    width             : 128px;
-    background : orange;
+    height            : 40px;
+    width             : 140px;
+    background : lightpink;
 }
 .spa-shell-head-acct {
     top : 4px;
