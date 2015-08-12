@@ -34,7 +34,7 @@ spa.fake = (function () {
                 'background-color' : 'rgb( 128, 192, 192)'
             }
         },
-        { name : 'Per Kristian', _id : 'id_04',
+        { name : 'Marta', _id : 'id_04',
             css_map : { top: 140, left: 20,
                 'background-color' : 'rgb( 192, 128, 128)'
             }
@@ -76,7 +76,7 @@ spa.fake = (function () {
                         dest_id : user.id,
                         dest_name : user.name,
                         sender_id : data.dest_id,
-                        msg_text : 'Du er så kul, ' + user.name
+                        msg_text : 'Du er kul, ' + user.name +', men ikke så kul som meg!'
                     }]);
                 }, 2000);
             }
@@ -113,7 +113,7 @@ spa.fake = (function () {
                         dest_id : user.id,
                         dest_name : user.name,
                         sender_id : 'id_04',
-                        msg_text : 'Yo, ' + user.name + '-girl! Per Kristian her.'
+                        msg_text : 'Yo, ' + user.name + ', my man! Marta her!'
                     }]);
                 }
                 else { emit_mock_msg(); }
